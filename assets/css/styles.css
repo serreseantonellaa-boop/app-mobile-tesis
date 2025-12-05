@@ -45,6 +45,10 @@
 }
 
 #contenido-pantalla-2{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     margin-top: 40%;
 }
 
@@ -54,11 +58,12 @@
 
 #pantalla-2 h3{
     font-weight:200;
+    margin-bottom: 6%;
 }
 
 
 .notificacion{
-    margin-top: 5%;
+    margin-top: 2%;
     background-color: rgba(0, 0, 0, 0.53);
     border: solid rgba(255, 254, 254, 0.18);
     justify-content: center;
@@ -68,12 +73,30 @@
     padding-bottom: 4%;
     padding-left: 6%;
     padding-right: 6%;
-    width: 100%;
+    width: 90%;
     display: flex;
     gap: 6%;
     font-size: medium;
     text-align: left;
+
+    /* acá empieza lo "nuevo" para animar, sin cambiar tamaños */
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
+
+/* cuando entra */
+.notificacion.mostrar{
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* cuando se va (fade-out hacia arriba) */
+.notificacion.ocultar{
+    opacity: 0;
+    transform: translateY(-10px);
+}
+
 
 .icono-noti img{
     border-radius: 10px;
