@@ -1,15 +1,15 @@
 // variables globales
-// capturo las dos “pantallas” principales
+// capturo las dos pantallas principales
 let pantalla1 = document.getElementById('pantalla-1');   // pantalla negra de inicio (bloqueo)
-let pantalla2 = document.getElementById('pantalla-2');   // pantalla con fondo + hora + notis
+let pantalla2 = document.getElementById('pantalla-2');   // pantalla con fondo, hora, notis
 
-// contenedor general (por si después lo necesito para algo más)
+// contenedor general 
 let contenedorGral = document.getElementById('contenedor-gral');
 
 // este es el contenedor donde van la hora, la fecha y las notificaciones
 let contenidoPantalla2 = document.getElementById('contenido-pantalla-2');
 
-// cuando hago click en la pantalla negra, arranca la “sesión” de notificaciones
+// cuando hago click en la pantalla negra, arranca la sesión de notificaciones
 pantalla1.addEventListener('click', inicio);
 
 // función de inicio
@@ -36,7 +36,7 @@ function actualizarReloj() {
   let horas = ahora.getHours();      // de 0 a 23
   let minutos = ahora.getMinutes();  // de 0 a 59
 
-  // si los minutos son menores que 10, le agrego un 0 adelante para que quede tipo 14:05
+  // si los minutos son menores que 10, le agrego un 0 adelante para que quede 14:05
   if (minutos < 10) {
     minutos = '0' + minutos;
   }
@@ -59,16 +59,14 @@ function actualizarReloj() {
   let nombreDia = dias[diaSemana];
   let nombreMes = meses[mes];
 
-  // ejemplo: "martes 9 de diciembre"
+  // fecha completa
   let fechaTexto = nombreDia + ' ' + diaMes + ' de ' + nombreMes;
 
   // escribo la info en el HTML
-  // solo la hora grande del lockscreen usa la clase "hora-lock"
-  // (las notificaciones YA NO tienen esta clase para que su hora quede congelada)
+  //la hora grande del lockscreen usa la clase "hora-lock"
   let horasDom = document.getElementsByClassName('hora-lock');
 
   // recorro la colección y les pongo la misma hora a todos los que tengan esa clase
-  // en la práctica debería ser solo el h1 de la hora grande
   for (let i = 0; i < horasDom.length; i++) {
     horasDom[i].innerText = horaFormateada;
   }
@@ -91,7 +89,7 @@ setInterval(actualizarReloj, 60 * 1000);
 // nombreApp: nombre de la app ("WhatsApp", "Banco Aurora", etc.)
 // texto: contenido de la notificación
 //la hora de la notificación se congela cuando aparece,
-// así que acá calculo la hora una sola vez y la dejo fija.
+// acá calculo la hora una sola vez y la dejo fija.
 function notificacion(icono, nombreApp, texto) {
   // contenedor principal de la notificación
   let contenedorNotificacion = document.createElement('div');
@@ -183,7 +181,7 @@ function dispararRafaga(rafaga, intervaloMs) {
       noti.mensaje
     );
 
-    // si afectaSaldo es true, más adelante le vamos a avisar a la otra app
+    // si afectaSaldo es true, más adelante le voy a avisasr a la otra app
     // por ahora lo dejo preparado
     /*
     if (noti.afectaSaldo) {
