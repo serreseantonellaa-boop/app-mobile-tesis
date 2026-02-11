@@ -1,118 +1,376 @@
-*{
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
 }
 
-.roboto{
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #000;
+}
+
+.roboto {
   font-family: "Roboto", sans-serif;
   font-optical-sizing: auto;
 }
 
-.no-disp{
-    display: none;
+.no-disp {
+  display: none !important;
 }
 
-.disp{
-    display: block;
+.disp {
+  display: flex !important;
 }
 
-#contenedor-gral{
-    width: 100%;
-    height: 100%;
+/* ========================================
+   CONTENEDOR GENERAL
+   ======================================== */
+#contenedor-gral {
+  width: 100%;
+  height: 100%;
+  position: relative;
 }
 
-#pantalla-1{
-    background-color: black;
-    width: 100%;
-    height: 100vh;
+/* ========================================
+   STATUS BAR (compartida)
+   ======================================== */
+.status-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 44px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  color: white;
+  font-size: 14px;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.2);
 }
 
-#pantalla-2{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 2%;
-    color: white;
-    font-weight: bolder;
-    text-align: center;
-    background-image: url(../imgs/fondo.png);
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
-    width: 100%;
-    height: 100vh;
+.status-time {
+  font-weight: 600;
+  font-size: 14px;
 }
 
-#contenido-pantalla-2{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin-top: 40%;
+.status-icons {
+  display: flex;
+  align-items: center;
 }
 
-#textos h1{
-    font-size: 4em;
+.status-bar-img {
+  height: 16px;
+  opacity: 0.9;
 }
 
-#pantalla-2 h3{
-    font-weight:200;
-    margin-bottom: 6%;
+/* ========================================
+   PANTALLA 1: LOCKSCREEN
+   ======================================== */
+#pantalla-1 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 100vh;
+  background-image: url(../imgs/fondo.png);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  color: white;
+  text-align: center;
+  position: relative;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 
-
-.notificacion{
-    margin-top: 2%;
-    background-color: rgba(0, 0, 0, 0.53);
-    border: solid rgba(255, 254, 254, 0.18);
-    justify-content: center;
-    align-items: center;
-    border-radius: 20px;
-    padding-top: 4%;
-    padding-bottom: 4%;
-    padding-left: 6%;
-    padding-right: 6%;
-    width: 90%;
-    display: flex;
-    gap: 6%;
-    font-size: medium;
-    text-align: left;
-
-    /* acá empieza lo "nuevo" para animar, sin cambiar tamaños */
-    opacity: 0;
-    transform: translateY(10px);
-    transition: opacity 0.3s ease, transform 0.3s ease;
+#lock-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 30%;
+  gap: 4px;
 }
 
-/* cuando entra */
-.notificacion.mostrar{
-    opacity: 1;
-    transform: translateY(0);
+.lock-hora-grande {
+  font-size: 5em;
+  font-weight: 200;
+  letter-spacing: 2px;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
 }
 
-/* cuando se va (fade-out hacia arriba) */
-.notificacion.ocultar{
-    opacity: 0;
-    transform: translateY(-10px);
+#pantalla-1 h3 {
+  font-weight: 300;
+  font-size: 1.1em;
+  opacity: 0.9;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
 }
 
-
-.icono-noti img{
-    border-radius: 10px;
+/* ========================================
+   PANTALLA 2: HOME SCREEN DESBLOQUEADO
+   ======================================== */
+#pantalla-2 {
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+  background-image: url(../imgs/fondo2.png);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  color: white;
+  position: relative;
+  overflow: hidden;
 }
 
-.titulo-noti{
-    font-size: 1em;   /* o 1.2em, lo que te guste */
-    font-weight: 500; /* por si lo querés un poco menos bold */
-    margin-bottom: 2%;
+/* ========================================
+   GOOGLE SEARCH BAR
+   ======================================== */
+#google-search-bar {
+  position: absolute;
+  bottom: 120px;
+  left: 0;
+  right: 0;
+  padding: 0 16px;
+  z-index: 60;
+  margin-bottom: 10%;
 }
-.hora-noti{
+
+.search-bar-inner {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 24px;
+  padding: 10px 16px;
+  gap: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.search-g {
+  font-size: 20px;
+  font-weight: 700;
+  color: #4285F4;
+  font-family: 'Roboto', sans-serif;
+}
+
+.search-placeholder {
+  flex: 1;
+  font-size: 15px;
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.search-mic {
+  font-size: 18px;
+  opacity: 0.7;
+}
+
+/* ========================================
+   CONTENEDOR DE NOTIFICACIONES (CAOS)
+   ======================================== */
+#notification-container {
+  position: absolute;
+  top: 10px;
+  left: 0;
+  right: 0;
+  bottom: 175px;
+  padding: 0 10px;
+  overflow: hidden;
+  z-index: 50;
+  pointer-events: none;
+}
+
+/* ========================================
+   NOTIFICACIÓN INDIVIDUAL (estilo iOS/Android banner)
+   ======================================== */
+.notificacion {
+  background: rgba(30, 30, 30, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  padding: 14px 20px;
+  margin-bottom: 8px;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 14px;
+  text-align: left;
+  line-height: 1.5;
+  color: white;
+
+  /* animación de entrada */
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+
+/* cuando aparece */
+.notificacion.mostrar {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* cuando se va */
+.notificacion.ocultar {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.25s ease-in, transform 0.25s ease-in;
+}
+
+/* Notificaciones de GASTO: borde rojo sutil */
+.notificacion.es-gasto {
+  border-left: 3px solid rgba(231, 76, 60, 0.7);
+}
+
+/* ========================================
+   ICONO DE NOTIFICACIÓN
+   ======================================== */
+.icono-noti {
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+}
+
+.icono-noti img {
+  width: 38px;
+  height: 38px;
+  border-radius: 9px;
+  object-fit: cover;
+}
+
+/* ========================================
+   TEXTOS DE NOTIFICACIÓN
+   ======================================== */
+.textos-noti {
+  flex: 1;
+  min-width: 0;
+}
+
+.titulo-noti {
+  font-size: 0.85em;
+  font-weight: 600;
+  margin-bottom: 2px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hora-noti {
   font-size: 0.8em;
-  margin-left: 2%;
   font-weight: 400;
-  opacity: 0.8;
+  opacity: 0.5;
 }
-.contenido-noti{
-    font-weight: 200;
+
+.contenido-noti {
+  font-size: 0.85em;
+  font-weight: 300;
+  line-height: 1.3;
+  opacity: 0.9;
+  /* truncar texto largo */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ========================================
+   HOME SCREEN: GRILLA DE APPS
+   ======================================== */
+#home-screen {
+  position: absolute;
+  bottom: 30px;
+  left: 0;
+  right: 0;
+  padding: 0 24px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  z-index: 10;
+}
+
+.app-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  position: relative;
+}
+
+.icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+.status-right {
+  display: flex;
+  align-items: center;
+}
+
+.app-img {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+}
+
+.app-emoji {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.app-name {
+  color: white;
+  font-size: 10px;
+  text-align: center;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+}
+
+.badge {
+  position: absolute;
+  top: -4px;
+  right: 2px;
+  background: #e74c3c;
+  color: white;
+  border-radius: 10px;
+  min-width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: bold;
+  padding: 0 5px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  animation: popIn 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  z-index: 20;
+}
+
+@keyframes popIn {
+  0% { transform: scale(0); }
+  100% { transform: scale(1); }
+}
+
+/* ========================================
+   ANIMACIÓN DE DESBLOQUEO
+   ======================================== */
+#pantalla-1.desbloqueando {
+  animation: unlock 0.4s ease-in forwards;
+}
+
+@keyframes unlock {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.05);
+  }
 }

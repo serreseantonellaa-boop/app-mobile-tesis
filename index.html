@@ -2,7 +2,7 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
     <link rel="manifest" href="/manifest.webmanifest" />
     <meta name="theme-color" content="#000000" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -16,19 +16,68 @@
   </head>
   <body>
     <div id="contenedor-gral" class="roboto">
-      <div id="pantalla-1" class="disp"></div>
 
-      <div id="pantalla-2" class="no-disp">
-        <div id="contenido-pantalla-2">
-          <div id="textos">
-            <!-- HORA GRANDE DEL LOCKSCREEN -->
-            <h1 class="hora-lock">14:30</h1>
-            <!-- FECHA DEL LOCKSCREEN -->
-            <h3 id="fecha-lock">martes 9 de diciembre</h3>
-          </div>
-
-          <!-- NOTIFICACIÓN -->
+      <!-- ============================================ -->
+      <!-- PANTALLA 1: LOCKSCREEN (tap para desbloquear) -->
+      <!-- En la instalación la desbloquea la app de la notebook -->
+      <!-- ============================================ -->
+      <div id="pantalla-1" class="disp">
+        <!-- Hora y fecha -->
+        <div id="lock-content">
+          <h1 class="hora-lock lock-hora-grande">14:30</h1>
+          <h3 id="fecha-lock">martes 9 de diciembre</h3>
         </div>
+      </div>
+
+      <!-- ============================================ -->
+      <!-- PANTALLA 2: HOME SCREEN desbloqueado + notis -->
+      <!-- ============================================ -->
+      <div id="pantalla-2" class="no-disp">
+
+        <!-- Contenedor de notificaciones (caen desde arriba) -->
+        <div id="notification-container"></div>
+
+        <!-- Barra de búsqueda Google (arriba de las apps) -->
+        <div id="google-search-bar">
+          <div class="search-bar-inner">
+            <span class="search-g">G</span>
+            <span class="search-placeholder">Buscar</span>
+            <span class="search-mic">🎙️</span>
+          </div>
+        </div>
+
+        <!-- Grilla de apps (home screen) -->
+        <div id="home-screen">
+          <div class="app-icon">
+            <div class="icon" style="background: #25D366;">
+              <img src="assets/imgs/icono-wtsap.png" alt="WhatsApp" class="app-img" />
+            </div>
+            <span class="badge" id="whatsappBadge" style="display:none;">0</span>
+            <span class="app-name">WhatsApp</span>
+          </div>
+          <div class="app-icon">
+            <div class="icon" style="background: #EA4335;">
+              <span class="app-emoji">✉️</span>
+            </div>
+            <span class="badge" id="gmailBadge" style="display:none;">0</span>
+            <span class="app-name">Gmail</span>
+          </div>
+          <div class="app-icon">
+            <div class="icon" style="background: #1a1a2e;">
+              <img src="assets/imgs/icono-banco.png" alt="Banco" class="app-img" />
+            </div>
+            <span class="badge" id="bancoBadge" style="display:none;">0</span>
+            <span class="app-name">Banco</span>
+          </div>
+          <div class="app-icon">
+            <div class="icon" style="background: #4285F4;">
+              <span class="app-emoji">📅</span>
+            </div>
+            <span class="badge" id="calendarioBadge" style="display:none;">0</span>
+            <span class="app-name">Calendario</span>
+          </div>
+        </div>
+
       </div>
     </div>
 
