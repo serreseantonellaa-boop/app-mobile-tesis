@@ -20,18 +20,14 @@ let calendarioCount = 0;
 let sonidoNoti = new Audio('assets/sounds/sonido-noti-simple.mp3');
 
 function playSonidoNoti() {
-  // cortar el sonido anterior si todavía suena
   sonidoNoti.pause();
   sonidoNoti.currentTime = 0;
   sonidoNoti.play();
-  if (noti.afectaSaldo) {
-    enviarGasto(noti);
-  }
-  
 }
+
 let activeNotifications = [];
 let isInPeaceMode = false;
-let maxVisibleNotis = 6;  // máximo en pantalla a la vez
+let maxVisibleNotis = 6;
 let chaosStarted = false;
 
 // =============================================================
@@ -45,17 +41,14 @@ function actualizarReloj() {
   if (minutos < 10) minutos = '0' + minutos;
   let horaFormateada = horas + ':' + minutos;
 
-  // actualizar todos los elementos con clase hora-lock
   let horasDom = document.getElementsByClassName('hora-lock');
   for (let i = 0; i < horasDom.length; i++) {
     horasDom[i].innerText = horaFormateada;
   }
 
-  // hora en el home screen
   let homeTime = document.getElementById('home-time');
   if (homeTime) homeTime.innerText = horaFormateada;
 
-  // fecha del lockscreen
   let diaSemana = ahora.getDay();
   let diaMes = ahora.getDate();
   let mes = ahora.getMonth();
@@ -111,24 +104,39 @@ function updateCalendarioBadge() {
 }
 
 // =============================================================
-// SELECCIÓN ALEATORIA CON PESOS
+// SELECCIÓN ALEATORIA CON PESOS (SIN REPETIR)
 // =============================================================
+
+let notificacionesUsadas = [];
 
 function getRandomNotification() {
   let pool = datosNotificaciones.pool;
   let pesos = datosNotificaciones.pesos;
 
-  // construir array ponderado
+  // Filtrar las que ya salieron
+  let disponibles = pool.filter(function(noti) {
+    return notificacionesUsadas.indexOf(noti.id) === -1;
+  });
+
+  // Si se agotaron todas, reiniciar
+  if (disponibles.length === 0) {
+    notificacionesUsadas = [];
+    disponibles = pool;
+  }
+
+  // Construir array ponderado con las disponibles
   let weighted = [];
-  for (let i = 0; i < pool.length; i++) {
-    let noti = pool[i];
+  for (let i = 0; i < disponibles.length; i++) {
+    let noti = disponibles[i];
     let peso = pesos[noti.categoria] || 1;
     for (let j = 0; j < peso; j++) {
       weighted.push(noti);
     }
   }
 
-  return weighted[Math.floor(Math.random() * weighted.length)];
+  let elegida = weighted[Math.floor(Math.random() * weighted.length)];
+  notificacionesUsadas.push(elegida.id);
+  return elegida;
 }
 
 // =============================================================
@@ -197,6 +205,11 @@ function crearNotificacion(noti) {
   // sonido
   playSonidoNoti();
 
+  // Si es una notificación de gasto, avisar a la notebook
+  if (noti.afectaSaldo) {
+    enviarGasto(noti);
+  }
+
   // efectos secundarios: actualizar badges según categoría
   if (noti.icono.includes('wtsap')) {
     updateWhatsAppBadge();
@@ -211,7 +224,7 @@ function crearNotificacion(noti) {
     updateCalendarioBadge();
   }
 
-  // programar desaparición (entre 5 y 10 segundos — tiempo para leer)
+  // programar desaparición (entre 5 y 10 segundos)
   let lifespan = Math.random() * 5000 + 5000;
 
   let notifObj = {
@@ -258,15 +271,12 @@ function forceRemove(element) {
 
 // =============================================================
 // MOTOR DE CAOS
-// Similar al index de referencia:
-// ráfagas de 1-3 notificaciones, micro-respiros, modo paz
 // =============================================================
 
 function scheduleChaos() {
   if (!chaosStarted) return;
 
   if (isInPeaceMode) {
-    // micro-respiro: 2 a 4 segundos sin notificaciones
     let peaceDuration = Math.random() * 2000 + 2000;
     setTimeout(function() {
       isInPeaceMode = false;
@@ -275,21 +285,18 @@ function scheduleChaos() {
     return;
   }
 
-  // ráfaga: 1 a 2 notificaciones (menos agresivo)
   let burstSize = Math.floor(Math.random() * 2) + 1;
 
   for (let i = 0; i < burstSize; i++) {
     setTimeout(function() {
       let noti = getRandomNotification();
       crearNotificacion(noti);
-    }, i * 400); // 400ms entre cada una de la ráfaga
+    }, i * 400);
   }
 
-  // decidir siguiente acción
-  let nextDelay = Math.random() * 2500 + 1500; // 1.5s - 4s
+  let nextDelay = Math.random() * 2500 + 1500;
 
   setTimeout(function() {
-    // 30% de probabilidad de entrar en modo paz
     if (Math.random() < 0.30) {
       isInPeaceMode = true;
     }
@@ -299,22 +306,19 @@ function scheduleChaos() {
 
 // =============================================================
 // DESBLOQUEO: tap en pantalla 1 → pantalla 2
+// (funciona como fallback si no hay WebSocket)
 // =============================================================
 
 pantalla1.addEventListener('click', function() {
-  // animación de desbloqueo
   pantalla1.classList.add('desbloqueando');
 
   setTimeout(function() {
-    // ocultar lockscreen
     pantalla1.classList.remove('disp', 'desbloqueando');
     pantalla1.classList.add('no-disp');
 
-    // mostrar home screen
     pantalla2.classList.remove('no-disp');
     pantalla2.classList.add('disp');
 
-    // arrancar el caos después de 1 segundo
     setTimeout(function() {
       chaosStarted = true;
       scheduleChaos();

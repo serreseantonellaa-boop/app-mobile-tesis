@@ -18,7 +18,7 @@
 // Para saber la IP: abrir terminal en la notebook y escribir "ipconfig" (Windows).
 // Buscar "Dirección IPv4" en el adaptador Wi-Fi (ej: 192.168.1.45).
 // IMPORTANTE: mientras estés probando en la misma PC, usá "localhost".
-let WS_URL = 'ws://localhost:8080';
+let WS_URL = 'ws://120.120.0.166:8080';
 
 let ws = null;
 let conectado = false;
@@ -99,12 +99,12 @@ function enviarGasto(noti) {
       tipo: 'gasto',
       id: noti.id,
       origen: noti.nombreApp,
+      mensaje: noti.mensaje,
       monto: noti.monto
     }));
     console.log('Gasto enviado:', noti.nombreApp, '-$' + noti.monto);
   }
 }
-
 // --- FUNCIONES QUE SE LLAMAN DESDE LOS MENSAJES ---
 // Estas funciones interactúan con main.js.
 // Se definen acá como "puente" y main.js las completa.
