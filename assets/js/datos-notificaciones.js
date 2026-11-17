@@ -1,40 +1,49 @@
 // ---------------------------------------------
-// Datos de las notificaciones
-// Pool grande de notificaciones organizadas por categoría.
-// El sistema las elige de forma aleatoria con pesos por categoría.
-// Categorías: cuidado, salud, trabajo, dinero, servicios, recordatorio
-// afectaSaldo: true = descuenta monto del presupuesto en la notebook
+// Datos de las notificaciones (revisados con Antonella el 2026-11-15)
+//
+// familia: app de origen. Define cómo se ve la notificación
+//   whatsapp, banco, gmail, calendario, obrasocial
+// impacto: cuánto estrés suma en la notebook (bajo, medio, alto)
+//   Las 4 de impacto alto aparecen en todas las sesiones.
+// banco: titulo + detalle se usan para el diseño (monto aparte en rojo).
+//   mensaje es el texto completo que se manda a la notebook.
+// afectaSaldo: true = descuenta "monto" del presupuesto en la notebook
 // ---------------------------------------------
 
 let datosNotificaciones = {
 
-  // =============================================
-  // POOL COMPLETO DE NOTIFICACIONES
-  // =============================================
   pool: [
     // --- CUIDADO / ESCUELA / HIJOS ---
     {
       id: "c01",
+      familia: "whatsapp",
+      impacto: "bajo",
       icono: "assets/imgs/icono-wtsap.png",
-      nombreApp: "Grupo madres jardín",
+      nombreApp: "Grupo familias 5°B",
       categoria: "cuidado",
       mensaje: "¿Quién puede llevar algo para la mesa dulce del viernes?",
       afectaSaldo: false,
-      monto: 0
+      monto: 0,
+      esGrupo: true
     },
     {
       id: "c02",
+      familia: "whatsapp",
+      impacto: "bajo",
       icono: "assets/imgs/icono-wtsap.png",
-      nombreApp: "Grupo madres jardín",
+      nombreApp: "Grupo familias 5°B",
       categoria: "cuidado",
       mensaje: "Recordá que mañana no hay clase por jornada docente.",
       afectaSaldo: false,
-      monto: 0
+      monto: 0,
+      esGrupo: true
     },
     {
       id: "c03",
+      familia: "whatsapp",
+      impacto: "alto",
       icono: "assets/imgs/icono-wtsap.png",
-      nombreApp: "Jardín sala amarilla",
+      nombreApp: "Escuela",
       categoria: "cuidado",
       mensaje: "Tu hijo se siente mal, necesitamos que lo retiren.",
       afectaSaldo: false,
@@ -42,15 +51,20 @@ let datosNotificaciones = {
     },
     {
       id: "c04",
+      familia: "whatsapp",
+      impacto: "bajo",
       icono: "assets/imgs/icono-wtsap.png",
-      nombreApp: "Grupo familias 3°B",
+      nombreApp: "Grupo familias 5°B",
       categoria: "cuidado",
       mensaje: "¿Llevar algo mañana para el cumple de la seño?",
       afectaSaldo: false,
-      monto: 0
+      monto: 0,
+      esGrupo: true
     },
     {
       id: "c05",
+      familia: "whatsapp",
+      impacto: "bajo",
       icono: "assets/imgs/icono-wtsap.png",
       nombreApp: "Escuela",
       categoria: "cuidado",
@@ -60,15 +74,20 @@ let datosNotificaciones = {
     },
     {
       id: "c06",
+      familia: "whatsapp",
+      impacto: "medio",
       icono: "assets/imgs/icono-wtsap.png",
-      nombreApp: "Grupo madres jardín",
+      nombreApp: "Grupo familias 5°B",
       categoria: "cuidado",
-      mensaje: "Hay piojos en la sala. Revisá a tu hijo/a esta noche.",
+      mensaje: "Hay piojos en el grado. Revisá a tu hijo esta noche.",
       afectaSaldo: false,
-      monto: 0
+      monto: 0,
+      esGrupo: true
     },
     {
       id: "c07",
+      familia: "whatsapp",
+      impacto: "medio",
       icono: "assets/imgs/icono-wtsap.png",
       nombreApp: "Mamá",
       categoria: "cuidado",
@@ -78,15 +97,20 @@ let datosNotificaciones = {
     },
     {
       id: "c08",
+      familia: "whatsapp",
+      impacto: "medio",
       icono: "assets/imgs/icono-wtsap.png",
-      nombreApp: "Grupo familias 3°B",
+      nombreApp: "Grupo familias 5°B",
       categoria: "cuidado",
       mensaje: "Pasaron la lista de materiales para el proyecto. Son 12 cosas.",
       afectaSaldo: false,
-      monto: 0
+      monto: 0,
+      esGrupo: true
     },
     {
       id: "c09",
+      familia: "whatsapp",
+      impacto: "medio",
       icono: "assets/imgs/icono-wtsap.png",
       nombreApp: "Vecina",
       categoria: "cuidado",
@@ -96,6 +120,8 @@ let datosNotificaciones = {
     },
     {
       id: "c10",
+      familia: "whatsapp",
+      impacto: "alto",
       icono: "assets/imgs/icono-wtsap.png",
       nombreApp: "Ex pareja",
       categoria: "cuidado",
@@ -107,7 +133,9 @@ let datosNotificaciones = {
     // --- SALUD ---
     {
       id: "s01",
-      icono: "assets/imgs/icono-pediatra.png",
+      familia: "whatsapp",
+      impacto: "bajo",
+      icono: "assets/imgs/icono-wtsap.png",
       nombreApp: "Pediatra Online",
       categoria: "salud",
       mensaje: "Turno pediátrico confirmado para mañana a las 18:30.",
@@ -116,7 +144,9 @@ let datosNotificaciones = {
     },
     {
       id: "s02",
-      icono: "assets/imgs/icono-farmacia.png",
+      familia: "whatsapp",
+      impacto: "medio",
+      icono: "assets/imgs/icono-wtsap.png",
       nombreApp: "Farmacia Central",
       categoria: "salud",
       mensaje: "Receta lista para retirar. Tenés 24 horas antes de que caduque.",
@@ -125,7 +155,9 @@ let datosNotificaciones = {
     },
     {
       id: "s03",
-      icono: "assets/imgs/icono-pediatra.png",
+      familia: "whatsapp",
+      impacto: "bajo",
+      icono: "assets/imgs/icono-wtsap.png",
       nombreApp: "Pediatra Online",
       categoria: "salud",
       mensaje: "Recordatorio: traer los análisis de sangre a la consulta.",
@@ -134,7 +166,9 @@ let datosNotificaciones = {
     },
     {
       id: "s04",
-      icono: "assets/imgs/icono-farmacia.png",
+      familia: "whatsapp",
+      impacto: "medio",
+      icono: "assets/imgs/icono-wtsap.png",
       nombreApp: "Farmacia Central",
       categoria: "salud",
       mensaje: "Tu pedido de medicamentos está listo. Total: $12.500.",
@@ -143,16 +177,20 @@ let datosNotificaciones = {
     },
     {
       id: "s05",
-      icono: "assets/imgs/icono-pediatra.png",
-      nombreApp: "Prepaga SaludPlus",
+      familia: "obrasocial",
+      impacto: "medio",
+      icono: "assets/imgs/icono-obrasocial.svg",
+      nombreApp: "SaludPlus Obra Social",
       categoria: "salud",
-      mensaje: "Recordatorio: pago de la cuota vence hoy.",
+      mensaje: "Autorización rechazada: el estudio requiere documentación adicional.",
       afectaSaldo: false,
       monto: 0
     },
     {
       id: "s06",
-      icono: "assets/imgs/icono-pediatra.png",
+      familia: "whatsapp",
+      impacto: "bajo",
+      icono: "assets/imgs/icono-wtsap.png",
       nombreApp: "Dentista",
       categoria: "salud",
       mensaje: "Turno para Mateo el jueves 10:00. Confirmar.",
@@ -160,9 +198,11 @@ let datosNotificaciones = {
       monto: 0
     },
 
-    // --- TRABAJO / CLIENTES ---
+    // --- TRABAJO ---
     {
       id: "t01",
+      familia: "whatsapp",
+      impacto: "medio",
       icono: "assets/imgs/icono-wtsap.png",
       nombreApp: "Cliente diseño",
       categoria: "trabajo",
@@ -172,6 +212,8 @@ let datosNotificaciones = {
     },
     {
       id: "t02",
+      familia: "whatsapp",
+      impacto: "medio",
       icono: "assets/imgs/icono-wtsap.png",
       nombreApp: "Cliente web",
       categoria: "trabajo",
@@ -181,6 +223,8 @@ let datosNotificaciones = {
     },
     {
       id: "t03",
+      familia: "whatsapp",
+      impacto: "alto",
       icono: "assets/imgs/icono-wtsap.png",
       nombreApp: "Jefa",
       categoria: "trabajo",
@@ -190,7 +234,9 @@ let datosNotificaciones = {
     },
     {
       id: "t04",
-      icono: "assets/imgs/icono-wtsap.png",
+      familia: "gmail",
+      impacto: "bajo",
+      icono: "assets/imgs/icono-gmail.svg",
       nombreApp: "Plataforma freelance",
       categoria: "trabajo",
       mensaje: "Nueva solicitud de presupuesto. Si no respondés hoy, vence.",
@@ -199,6 +245,8 @@ let datosNotificaciones = {
     },
     {
       id: "t05",
+      familia: "whatsapp",
+      impacto: "medio",
       icono: "assets/imgs/icono-wtsap.png",
       nombreApp: "Cliente",
       categoria: "trabajo",
@@ -208,6 +256,8 @@ let datosNotificaciones = {
     },
     {
       id: "t06",
+      familia: "whatsapp",
+      impacto: "bajo",
       icono: "assets/imgs/icono-wtsap.png",
       nombreApp: "Compañera trabajo",
       categoria: "trabajo",
@@ -217,6 +267,8 @@ let datosNotificaciones = {
     },
     {
       id: "t07",
+      familia: "whatsapp",
+      impacto: "medio",
       icono: "assets/imgs/icono-wtsap.png",
       nombreApp: "Cliente diseño",
       categoria: "trabajo",
@@ -225,168 +277,221 @@ let datosNotificaciones = {
       monto: 0
     },
 
-    // --- DINERO / BANCO / DÉBITOS ---
+    // --- DINERO (banco) ---
     {
       id: "d01",
+      familia: "banco",
+      impacto: "bajo",
       icono: "assets/imgs/icono-banco.png",
-      nombreApp: "Banco Galicia",
+      nombreApp: "Galicia",
       categoria: "dinero",
       mensaje: "Se debitó tu suscripción mensual a Netflix: $8.000",
       afectaSaldo: true,
-      monto: 8000
+      monto: 8000,
+      titulo: "Débito automático",
+      detalle: "Suscripción mensual a Netflix."
     },
     {
       id: "d02",
+      familia: "banco",
+      impacto: "bajo",
       icono: "assets/imgs/icono-banco.png",
-      nombreApp: "Banco Galicia",
+      nombreApp: "Galicia",
       categoria: "dinero",
       mensaje: "Se debitó tu suscripción a Disney+: $11.000",
       afectaSaldo: true,
-      monto: 11000
+      monto: 11000,
+      titulo: "Débito automático",
+      detalle: "Suscripción a Disney+."
     },
     {
       id: "d03",
-      icono: "assets/imgs/icono-banco.png",
-      nombreApp: "Banco Galicia",
+      familia: "whatsapp",
+      impacto: "medio",
+      icono: "assets/imgs/icono-wtsap.png",
+      nombreApp: "Escuela",
       categoria: "dinero",
-      mensaje: "Débito automático cuota escolar: $45.000",
+      mensaje: "Salida educativa al museo el jueves. Costo: $20.000 por alumno.",
       afectaSaldo: true,
-      monto: 45000
-    },
-    {
-      id: "d04",
-      icono: "assets/imgs/icono-banco.png",
-      nombreApp: "Banco Galicia",
-      categoria: "dinero",
-      mensaje: "Débito prepaga SaludPlus: $38.000",
-      afectaSaldo: true,
-      monto: 38000
+      monto: 20000
     },
     {
       id: "d05",
+      familia: "banco",
+      impacto: "bajo",
       icono: "assets/imgs/icono-banco.png",
-      nombreApp: "Banco Galicia",
+      nombreApp: "Galicia",
       categoria: "dinero",
       mensaje: "Se debitó Spotify Familiar: $6.000",
       afectaSaldo: true,
-      monto: 6000
+      monto: 6000,
+      titulo: "Débito automático",
+      detalle: "Spotify Familiar."
     },
     {
       id: "d06",
+      familia: "banco",
+      impacto: "bajo",
       icono: "assets/imgs/icono-banco.png",
-      nombreApp: "Banco Galicia",
+      nombreApp: "Galicia",
       categoria: "dinero",
       mensaje: "Comisión por mantenimiento de cuenta cobrada: $3.200",
       afectaSaldo: true,
-      monto: 3200
+      monto: 3200,
+      titulo: "Comisión cobrada",
+      detalle: "Mantenimiento de cuenta."
     },
     {
       id: "d07",
+      familia: "banco",
+      impacto: "bajo",
       icono: "assets/imgs/icono-banco.png",
-      nombreApp: "Banco Galicia",
+      nombreApp: "Galicia",
       categoria: "dinero",
       mensaje: "Débito seguro de vida obligatorio: $4.500",
       afectaSaldo: true,
-      monto: 4500
+      monto: 4500,
+      titulo: "Débito automático",
+      detalle: "Seguro de vida obligatorio."
     },
     {
       id: "d08",
+      familia: "banco",
+      impacto: "medio",
       icono: "assets/imgs/icono-banco.png",
-      nombreApp: "Banco Galicia",
+      nombreApp: "Galicia",
       categoria: "dinero",
       mensaje: "Pago mínimo tarjeta de crédito: $22.000",
       afectaSaldo: true,
-      monto: 22000
+      monto: 22000,
+      titulo: "Pago mínimo de tarjeta",
+      detalle: "Tarjeta de crédito."
     },
     {
       id: "d09",
+      familia: "banco",
+      impacto: "medio",
       icono: "assets/imgs/icono-banco.png",
-      nombreApp: "Banco Galicia",
+      nombreApp: "Galicia",
       categoria: "dinero",
       mensaje: "Alerta: tu saldo disponible es bajo.",
       afectaSaldo: false,
-      monto: 0
+      monto: 0,
+      titulo: "Alerta",
+      detalle: "Tu saldo disponible es bajo."
     },
     {
       id: "d10",
+      familia: "banco",
+      impacto: "alto",
       icono: "assets/imgs/icono-banco.png",
-      nombreApp: "Banco Galicia",
+      nombreApp: "Galicia",
       categoria: "dinero",
-      mensaje: "Cheque rechazado por fondos insuficientes.",
+      mensaje: "Débito automático rechazado por fondos insuficientes.",
       afectaSaldo: false,
-      monto: 0
+      monto: 0,
+      titulo: "Débito rechazado",
+      detalle: "Fondos insuficientes."
     },
 
-    // --- SERVICIOS / FACTURAS ---
+    // --- SERVICIOS (débitos atrasados del mes anterior) ---
     {
       id: "sv01",
+      familia: "banco",
+      impacto: "medio",
       icono: "assets/imgs/icono-banco.png",
-      nombreApp: "Edenor",
+      nombreApp: "Galicia",
       categoria: "servicios",
-      mensaje: "Factura de luz vencida. Total: $18.500. Último aviso.",
+      mensaje: "Débito automático Edenor: factura vencida del mes anterior $18.500",
       afectaSaldo: true,
-      monto: 18500
+      monto: 18500,
+      titulo: "Débito automático",
+      detalle: "Edenor: factura vencida del mes anterior."
     },
     {
       id: "sv02",
+      familia: "banco",
+      impacto: "medio",
       icono: "assets/imgs/icono-banco.png",
-      nombreApp: "Metrogas",
+      nombreApp: "Galicia",
       categoria: "servicios",
-      mensaje: "Factura de gas pendiente: $9.800",
+      mensaje: "Débito automático Metrogas: factura pendiente del mes anterior $9.800",
       afectaSaldo: true,
-      monto: 9800
+      monto: 9800,
+      titulo: "Débito automático",
+      detalle: "Metrogas: factura pendiente del mes anterior."
     },
     {
       id: "sv03",
-      icono: "assets/imgs/icono-banco.png",
-      nombreApp: "Aysa",
+      familia: "whatsapp",
+      impacto: "bajo",
+      icono: "assets/imgs/icono-wtsap.png",
+      nombreApp: "Administración del edificio",
       categoria: "servicios",
-      mensaje: "Corte de agua en tu zona de 12 a 18hs.",
+      mensaje: "Corte de agua en el edificio de 12 a 18 hs.",
       afectaSaldo: false,
       monto: 0
     },
     {
       id: "sv04",
+      familia: "banco",
+      impacto: "medio",
       icono: "assets/imgs/icono-banco.png",
-      nombreApp: "Fibertel",
+      nombreApp: "Galicia",
       categoria: "servicios",
-      mensaje: "Factura de internet vencida: $15.200. Suspensión en 48hs.",
+      mensaje: "Débito automático Fibertel: factura vencida $15.200. Suspensión en 48 hs.",
       afectaSaldo: true,
-      monto: 15200
+      monto: 15200,
+      titulo: "Débito automático",
+      detalle: "Fibertel: factura vencida. Suspensión en 48 hs."
     },
     {
       id: "sv05",
+      familia: "banco",
+      impacto: "medio",
       icono: "assets/imgs/icono-banco.png",
-      nombreApp: "Consorcio",
+      nombreApp: "Galicia",
       categoria: "servicios",
-      mensaje: "Expensas de este mes: $32.000. Vence el viernes.",
+      mensaje: "Débito expensas atrasadas del mes anterior: $32.000",
       afectaSaldo: true,
-      monto: 32000
+      monto: 32000,
+      titulo: "Débito automático",
+      detalle: "Expensas atrasadas del mes anterior."
     },
     {
       id: "sv06",
+      familia: "banco",
+      impacto: "bajo",
       icono: "assets/imgs/icono-banco.png",
-      nombreApp: "Cablevision",
+      nombreApp: "Galicia",
       categoria: "servicios",
-      mensaje: "Mora por pago fuera de término. Recargo: $2.400.",
+      mensaje: "Débito recargo por mora Cablevision: $2.400",
       afectaSaldo: true,
-      monto: 2400
+      monto: 2400,
+      titulo: "Débito automático",
+      detalle: "Recargo por mora Cablevision."
     },
     {
       id: "sv07",
+      familia: "banco",
+      impacto: "medio",
       icono: "assets/imgs/icono-banco.png",
-      nombreApp: "Celular",
+      nombreApp: "Galicia",
       categoria: "servicios",
-      mensaje: "Tu línea será suspendida por falta de pago: $7.600",
+      mensaje: "Débito automático línea celular: deuda pendiente $7.600. Riesgo de suspensión.",
       afectaSaldo: true,
-      monto: 7600
+      monto: 7600,
+      titulo: "Débito automático",
+      detalle: "Línea celular: deuda pendiente. Riesgo de suspensión."
     },
 
-    // --- RECORDATORIOS / RUIDO ATENCIONAL ---
+    // --- RECORDATORIOS ---
     {
       id: "r01",
+      familia: "whatsapp",
+      impacto: "bajo",
       icono: "assets/imgs/icono-wtsap.png",
-      nombreApp: "WhatsApp",
+      nombreApp: "Caro",
       categoria: "recordatorio",
       mensaje: "¿Viste mi mensaje de ayer?",
       afectaSaldo: false,
@@ -394,8 +499,10 @@ let datosNotificaciones = {
     },
     {
       id: "r02",
+      familia: "whatsapp",
+      impacto: "medio",
       icono: "assets/imgs/icono-wtsap.png",
-      nombreApp: "WhatsApp",
+      nombreApp: "Lucía",
       categoria: "recordatorio",
       mensaje: "Necesito que me ayudes con algo urgente.",
       afectaSaldo: false,
@@ -403,6 +510,8 @@ let datosNotificaciones = {
     },
     {
       id: "r03",
+      familia: "whatsapp",
+      impacto: "bajo",
       icono: "assets/imgs/icono-wtsap.png",
       nombreApp: "Amiga",
       categoria: "recordatorio",
@@ -412,8 +521,10 @@ let datosNotificaciones = {
     },
     {
       id: "r04",
-      icono: "assets/imgs/icono-wtsap.png",
-      nombreApp: "AFIP",
+      familia: "gmail",
+      impacto: "medio",
+      icono: "assets/imgs/icono-gmail.svg",
+      nombreApp: "ARCA",
       categoria: "recordatorio",
       mensaje: "Presentación de DDJJ vence en 3 días.",
       afectaSaldo: false,
@@ -421,7 +532,9 @@ let datosNotificaciones = {
     },
     {
       id: "r05",
-      icono: "assets/imgs/icono-wtsap.png",
+      familia: "calendario",
+      impacto: "bajo",
+      icono: "assets/imgs/icono-calendario.svg",
       nombreApp: "Reunión",
       categoria: "recordatorio",
       mensaje: "Zoom en 10 minutos. No te olvides.",
@@ -430,7 +543,9 @@ let datosNotificaciones = {
     },
     {
       id: "r06",
-      icono: "assets/imgs/icono-wtsap.png",
+      familia: "gmail",
+      impacto: "bajo",
+      icono: "assets/imgs/icono-gmail.svg",
       nombreApp: "Delivery",
       categoria: "recordatorio",
       mensaje: "El repartidor no encuentra tu dirección. Llamalo.",
@@ -439,7 +554,9 @@ let datosNotificaciones = {
     },
     {
       id: "r07",
-      icono: "assets/imgs/icono-wtsap.png",
+      familia: "calendario",
+      impacto: "medio",
+      icono: "assets/imgs/icono-calendario.svg",
       nombreApp: "Alarma",
       categoria: "recordatorio",
       mensaje: "Pagar el alquiler. Hoy vence.",
@@ -448,7 +565,9 @@ let datosNotificaciones = {
     },
     {
       id: "r08",
-      icono: "assets/imgs/icono-wtsap.png",
+      familia: "gmail",
+      impacto: "bajo",
+      icono: "assets/imgs/icono-gmail.svg",
       nombreApp: "Google",
       categoria: "recordatorio",
       mensaje: "Nueva actividad de inicio de sesión detectada.",
@@ -457,16 +576,21 @@ let datosNotificaciones = {
     },
     {
       id: "r09",
+      familia: "whatsapp",
+      impacto: "bajo",
       icono: "assets/imgs/icono-wtsap.png",
-      nombreApp: "WhatsApp",
+      nombreApp: "Grupo familias 5°B",
       categoria: "recordatorio",
-      mensaje: "3 mensajes sin leer del grupo del colegio.",
+      mensaje: "3 mensajes sin leer.",
       afectaSaldo: false,
-      monto: 0
+      monto: 0,
+      esGrupo: true
     },
     {
       id: "r10",
-      icono: "assets/imgs/icono-wtsap.png",
+      familia: "calendario",
+      impacto: "bajo",
+      icono: "assets/imgs/icono-calendario.svg",
       nombreApp: "Calendario",
       categoria: "recordatorio",
       mensaje: "Mañana: reunión de padres 18:30. No faltar.",
@@ -475,16 +599,20 @@ let datosNotificaciones = {
     },
     {
       id: "r11",
+      familia: "whatsapp",
+      impacto: "bajo",
       icono: "assets/imgs/icono-wtsap.png",
-      nombreApp: "WhatsApp",
+      nombreApp: "Mamá",
       categoria: "recordatorio",
-      mensaje: "Mamá te mandó un audio de 4 minutos.",
+      mensaje: "Te mandó un audio de 4 minutos.",
       afectaSaldo: false,
       monto: 0
     },
     {
       id: "r12",
-      icono: "assets/imgs/icono-wtsap.png",
+      familia: "gmail",
+      impacto: "medio",
+      icono: "assets/imgs/icono-gmail.svg",
       nombreApp: "Seguro",
       categoria: "recordatorio",
       mensaje: "Cuota atrasada. Póliza en riesgo de suspensión.",
@@ -494,15 +622,46 @@ let datosNotificaciones = {
   ],
 
   // =============================================
+  // PARTITURA DE LOS 2 MINUTOS
+  // Cuándo aparece cada notificación (en segundos desde que arranca).
+  // La presión crece por tramos. Todo se ajusta acá.
+  // =============================================
+  partitura: {
+    duracionTotal: 118,     // deja de mandar 2 segundos antes del final
+    vidaNotificacion: 6,    // todas duran lo mismo en pantalla (segundos)
+
+    // Tramos: desde, hasta, cada cuántos segundos (mínimo y máximo)
+    tramos: [
+      { desde: 2,  hasta: 30,  cadaMin: 3.5, cadaMax: 4.5 },  // arranque: se puede leer
+      { desde: 30, hasta: 80,  cadaMin: 2,   cadaMax: 3 },    // se acelera
+      { desde: 80, hasta: 118, cadaMin: 1,   cadaMax: 1.5 }   // saturación
+    ],
+
+    // Ráfagas: varias notificaciones casi juntas
+    rafagas: [
+      { segundo: 44, cantidad: 3 },
+      { segundo: 64, cantidad: 3 }
+    ],
+
+    // Las 4 de impacto alto, siempre en el mismo momento
+    fijas: [
+      { segundo: 20, id: "c10" },   // Ex pareja
+      { segundo: 48, id: "t03" },   // Jefa
+      { segundo: 72, id: "c03" },   // Escuela: tu hijo se siente mal
+      { segundo: 95, id: "d10" }    // Débito rechazado (antes de que llegue el freelance)
+    ]
+  },
+
+  // =============================================
   // PESOS POR CATEGORÍA (para la selección aleatoria)
   // Más peso = más probabilidad de aparecer
   // =============================================
   pesos: {
-    cuidado: 5,      // escuela/hijos: alta (WhatsApp sobre todo)
-    trabajo: 4,      // clientes, jefa: media-alta
-    recordatorio: 4,  // ruido atencional: media-alta
-    salud: 3,        // turnos, medicamentos: media
-    dinero: 2,       // débitos banco: baja (pocos pero impactantes)
-    servicios: 2     // facturas: baja (pocos pero impactantes)
+    cuidado: 5,
+    trabajo: 4,
+    recordatorio: 4,
+    salud: 3,
+    dinero: 2,
+    servicios: 2
   }
 };

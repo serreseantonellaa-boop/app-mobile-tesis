@@ -174,31 +174,26 @@ html, body {
   top: 10px;
   left: 0;
   right: 0;
-  bottom: 175px;
+  bottom: 120px;
   padding: 0 10px;
   overflow: hidden;
-  z-index: 50;
+  z-index: 70;
   pointer-events: none;
 }
 
 /* ========================================
-   NOTIFICACIÓN INDIVIDUAL (estilo iOS/Android banner)
+   NOTIFICACIÓN INDIVIDUAL
+   Cada una con el aspecto de su app de origen
    ======================================== */
 .notificacion {
-  background: rgba(30, 30, 30, 0.92);
+  background: rgba(32, 32, 32, 0.94);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 18px;
-  padding: 14px 20px;
-  margin-bottom: 8px;
-  display: flex;
-  gap: 10px;
-  align-items: flex-start;
-  font-size: 14px;
+  border-radius: 20px;
+  padding: 12px 14px;
+  margin-bottom: 7px;
+  color: #fff;
   text-align: left;
-  line-height: 1.5;
-  color: white;
 
   /* animación de entrada */
   opacity: 0;
@@ -206,147 +201,164 @@ html, body {
   transition: opacity 0.3s ease-out, transform 0.3s ease-out;
 }
 
-/* cuando aparece */
 .notificacion.mostrar {
   opacity: 1;
   transform: translateY(0);
 }
 
-/* cuando se va */
 .notificacion.ocultar {
   opacity: 0;
   transform: translateY(-10px);
   transition: opacity 0.25s ease-in, transform 0.25s ease-in;
 }
 
-/* Notificaciones de GASTO: borde rojo sutil */
-.notificacion.es-gasto {
-  border-left: 3px solid rgba(231, 76, 60, 0.7);
+.n-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: #bbb;
+  margin-bottom: 6px;
 }
 
-/* ========================================
-   ICONO DE NOTIFICACIÓN
-   ======================================== */
-.icono-noti {
-  flex-shrink: 0;
-  width: 38px;
-  height: 38px;
-}
-
-.icono-noti img {
-  width: 38px;
-  height: 38px;
-  border-radius: 9px;
+.n-mini {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
   object-fit: cover;
 }
 
-/* ========================================
-   TEXTOS DE NOTIFICACIÓN
-   ======================================== */
-.textos-noti {
+.n-app {
+  font-weight: 500;
+}
+
+.n-cuerpo {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.n-textos {
   flex: 1;
   min-width: 0;
 }
 
-.titulo-noti {
-  font-size: 0.85em;
-  font-weight: 600;
-  margin-bottom: 2px;
+.n-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
-  gap: 6px;
+  justify-content: center;
+  font-weight: 500;
+  font-size: 15px;
+  color: #fff;
 }
 
-.hora-noti {
-  font-size: 0.8em;
-  font-weight: 400;
-  opacity: 0.5;
+.n-tit {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 2px;
 }
 
-.contenido-noti {
-  font-size: 0.85em;
+.n-msg {
+  font-size: 13px;
   font-weight: 300;
-  line-height: 1.3;
-  opacity: 0.9;
-  /* truncar texto largo */
+  color: #ddd;
+  line-height: 1.35;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
+.n-acc {
+  display: flex;
+  gap: 18px;
+  margin-top: 10px;
+  padding-left: 2px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.n-monto {
+  font-size: 22px;
+  font-weight: 700;
+  color: #ff5b4b;
+  letter-spacing: -0.3px;
+  margin: 2px 0;
+}
+
+/* WhatsApp */
+.f-whatsapp .n-app,
+.f-whatsapp .n-acc { color: #25D366; }
+
+/* Banco Galicia (opción B: oscura, monto en rojo) */
+.f-banco .n-app { color: #FF8A3D; }
+
+/* Obra social */
+.f-obrasocial .n-app { color: #4DB6AC; }
+
+/* Gmail: oscura como el resto, con el rojo de Gmail */
+.f-gmail .n-app,
+.f-gmail .n-acc { color: #F28B82; }
+
+/* Calendario: oscura como el resto, con el azul de Calendario */
+.f-calendario .n-app,
+.f-calendario .n-acc { color: #8AB4F8; }
+
 /* ========================================
-   HOME SCREEN: GRILLA DE APPS
+   DOCK: cinco íconos iguales, sin nombres
    ======================================== */
 #home-screen {
   position: absolute;
-  bottom: 30px;
-  left: 0;
-  right: 0;
-  padding: 0 24px;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
+  left: 12px;
+  right: 12px;
+  bottom: 18px;
+  height: 88px;
+  border-radius: 30px;
+  background: rgba(10, 10, 10, 0.55);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0 10px;
   z-index: 10;
 }
 
-.app-icon {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
+.dk {
   position: relative;
+  width: 54px;
+  height: 54px;
 }
 
-.icon {
-  width: 56px;
-  height: 56px;
-  border-radius: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  overflow: hidden;
-}
-
-.status-right {
-  display: flex;
-  align-items: center;
-}
-
-.app-img {
-  width: 34px;
-  height: 34px;
-  object-fit: contain;
-}
-
-.app-emoji {
-  font-size: 28px;
-  line-height: 1;
-}
-
-.app-name {
-  color: white;
-  font-size: 10px;
-  text-align: center;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+.dk-ic {
+  width: 54px;
+  height: 54px;
+  border-radius: 16px;
+  display: block;
+  object-fit: cover;
 }
 
 .badge {
   position: absolute;
-  top: -4px;
-  right: 2px;
+  top: -6px;
+  right: -7px;
   background: #e74c3c;
   color: white;
-  border-radius: 10px;
-  min-width: 18px;
-  height: 18px;
+  border-radius: 11px;
+  border: 2px solid #1a1a1a;
+  min-width: 22px;
+  height: 22px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: bold;
-  padding: 0 5px;
+  padding: 0 6px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
   animation: popIn 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   z-index: 20;

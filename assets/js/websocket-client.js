@@ -2,15 +2,16 @@
 // WEBSOCKET CLIENT - APP DE NOTIFICACIONES (CELULAR)
 // =============================================================
 // Este archivo conecta el celular al servidor WebSocket.
-// 
+//
 // RECIBE:
 //   - "start"  → desbloquea la pantalla y arranca las notificaciones
 //   - "stop"   → detiene las notificaciones y vuelve a pantalla negra
 //   - "reset"  → reinicia todo para el siguiente visitante
 //
 // ENVÍA:
-//   - "identificar" → le dice al servidor "soy el celular"
-//   - "gasto"       → avisa que una notificación con afectaSaldo:true apareció
+//   - "identificar"  → le dice al servidor "soy el celular"
+//   - "gasto"        → avisa que una notificación con afectaSaldo:true apareció
+//   - "notificacion" → envía TODAS las notificaciones para que aparezcan en la notebook
 // =============================================================
 
 // --- CONFIGURACIÓN ---
@@ -18,7 +19,11 @@
 // Para saber la IP: abrir terminal en la notebook y escribir "ipconfig" (Windows).
 // Buscar "Dirección IPv4" en el adaptador Wi-Fi (ej: 192.168.1.45).
 // IMPORTANTE: mientras estés probando en la misma PC, usá "localhost".
-let WS_URL = 'ws://120.120.0.166:8080';
+// IP de la notebook en la red donde se monta la instalación.
+// Se averigua en la notebook con: cmd > ipconfig > "Dirección IPv4".
+//   Casa:     192.168.1.51
+//   Facultad: 120.120.0.166
+let WS_URL = 'ws://192.168.1.51:8080';
 
 let ws = null;
 let conectado = false;
@@ -79,7 +84,6 @@ function conectarWebSocket() {
     console.log('Conexión cerrada. Reintentando en 3 segundos...');
     conectado = false;
 
-    // Reintentar conexión automáticamente
     setTimeout(function() {
       conectarWebSocket();
     }, 3000);
@@ -93,6 +97,7 @@ function conectarWebSocket() {
 
 // --- ENVIAR GASTO AL SERVIDOR ---
 // Se llama desde main.js cada vez que aparece una notificación con afectaSaldo: true.
+// Solo envía los datos que la notebook necesita para descontar del presupuesto.
 function enviarGasto(noti) {
   if (conectado && ws.readyState === WebSocket.OPEN) {
     ws.send(JSON.stringify({
@@ -105,12 +110,34 @@ function enviarGasto(noti) {
     console.log('Gasto enviado:', noti.nombreApp, '-$' + noti.monto);
   }
 }
-// --- FUNCIONES QUE SE LLAMAN DESDE LOS MENSAJES ---
-// Estas funciones interactúan con main.js.
-// Se definen acá como "puente" y main.js las completa.
 
+// --- ENVIAR NOTIFICACIÓN AL SERVIDOR ---
+// Se llama desde main.js para TODAS las notificaciones (gastos y no gastos).
+// La notebook las muestra como notificaciones estilo Windows 11 en pantalla.
+function enviarNotificacion(noti) {
+  if (conectado && ws.readyState === WebSocket.OPEN) {
+    ws.send(JSON.stringify({
+      tipo: 'notificacion',
+      id: noti.id,
+      nombreApp: noti.nombreApp,
+      mensaje: noti.mensaje,
+      categoria: noti.categoria,
+      afectaSaldo: noti.afectaSaldo,
+      monto: noti.monto || 0,
+      familia: noti.familia,
+      impacto: noti.impacto,
+      titulo: noti.titulo || '',
+      detalle: noti.detalle || '',
+      esGrupo: !!noti.esGrupo
+    }));
+    console.log('Notificacion enviada:', noti.nombreApp);
+  }
+}
+
+// --- FUNCIONES QUE SE LLAMAN DESDE LOS MENSAJES ---
 function desbloquearDesdeWebSocket() {
-  // Simula lo que hace el tap en pantalla 1: desbloquear y arrancar caos
+  // Si ya está corriendo, no arrancar dos veces
+  if (typeof chaosStarted !== 'undefined' && chaosStarted) return;
   if (typeof pantalla1 !== 'undefined' && typeof pantalla2 !== 'undefined') {
     pantalla1.classList.add('desbloqueando');
 
@@ -129,40 +156,31 @@ function desbloquearDesdeWebSocket() {
 }
 
 function detenerDesdeWebSocket() {
-  // Detiene las notificaciones y vuelve a pantalla negra
   chaosStarted = false;
+  detenerPartitura();
+  notificacionesUsadas = [];
 
-  // Limpiar notificaciones activas
   activeNotifications.forEach(function(notifObj) {
     clearTimeout(notifObj.timeout);
     forceRemove(notifObj.element);
   });
   activeNotifications = [];
 
-  // Volver a pantalla 1 (negra, sin hora, solo negro)
   pantalla2.classList.remove('disp');
   pantalla2.classList.add('no-disp');
   pantalla1.classList.remove('no-disp');
   pantalla1.classList.add('disp');
 
-  // Limpiar badges
-  whatsappCount = 0;
-  bancoCount = 0;
-  gmailCount = 0;
-  calendarioCount = 0;
-  whatsappBadge.style.display = 'none';
-  bancoBadge.style.display = 'none';
-  gmailBadge.style.display = 'none';
-  calendarioBadge.style.display = 'none';
+  Object.keys(badges).forEach(function(fam) {
+    contadores[fam] = 0;
+    if (badges[fam]) badges[fam].style.display = 'none';
+  });
 
-  // Limpiar contenedor de notificaciones
   notificationContainer.innerHTML = '';
 }
 
 function resetearDesdeWebSocket() {
-  // Igual que detener, pero se asegura de dejar todo limpio
   detenerDesdeWebSocket();
-  isInPeaceMode = false;
 }
 
 // --- INICIAR CONEXIÓN ---

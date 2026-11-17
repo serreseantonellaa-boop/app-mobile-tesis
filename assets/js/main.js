@@ -6,15 +6,13 @@ let pantalla1 = document.getElementById('pantalla-1');
 let pantalla2 = document.getElementById('pantalla-2');
 let notificationContainer = document.getElementById('notification-container');
 
-// badges
-let whatsappBadge = document.getElementById('whatsappBadge');
-let bancoBadge = document.getElementById('bancoBadge');
-let gmailBadge = document.getElementById('gmailBadge');
-let calendarioBadge = document.getElementById('calendarioBadge');
-let whatsappCount = 0;
-let bancoCount = 0;
-let gmailCount = 0;
-let calendarioCount = 0;
+// badges: uno por app del dock
+let badges = {};
+let contadores = {};
+['whatsapp', 'gmail', 'banco', 'obrasocial', 'calendario'].forEach(function(fam) {
+  badges[fam] = document.getElementById('badge-' + fam);
+  contadores[fam] = 0;
+});
 
 // sonido de notificación
 let sonidoNoti = new Audio('assets/sounds/sonido-noti-simple.mp3');
@@ -26,7 +24,6 @@ function playSonidoNoti() {
 }
 
 let activeNotifications = [];
-let isInPeaceMode = false;
 let maxVisibleNotis = 6;
 let chaosStarted = false;
 
@@ -75,32 +72,13 @@ function animateBadge(badge) {
   }, 10);
 }
 
-function updateWhatsAppBadge() {
-  whatsappCount++;
-  whatsappBadge.textContent = whatsappCount > 99 ? '99+' : whatsappCount;
-  whatsappBadge.style.display = 'flex';
-  animateBadge(whatsappBadge);
-}
-
-function updateBancoBadge() {
-  bancoCount++;
-  bancoBadge.textContent = bancoCount > 99 ? '99+' : bancoCount;
-  bancoBadge.style.display = 'flex';
-  animateBadge(bancoBadge);
-}
-
-function updateGmailBadge() {
-  gmailCount++;
-  gmailBadge.textContent = gmailCount > 99 ? '99+' : gmailCount;
-  gmailBadge.style.display = 'flex';
-  animateBadge(gmailBadge);
-}
-
-function updateCalendarioBadge() {
-  calendarioCount++;
-  calendarioBadge.textContent = calendarioCount > 99 ? '99+' : calendarioCount;
-  calendarioBadge.style.display = 'flex';
-  animateBadge(calendarioBadge);
+function sumarBadge(familia) {
+  let badge = badges[familia];
+  if (!badge) return;
+  contadores[familia]++;
+  badge.textContent = contadores[familia] > 99 ? '99+' : contadores[familia];
+  badge.style.display = 'flex';
+  animateBadge(badge);
 }
 
 // =============================================================
@@ -113,15 +91,21 @@ function getRandomNotification() {
   let pool = datosNotificaciones.pool;
   let pesos = datosNotificaciones.pesos;
 
+  // Las de impacto alto tienen su momento fijo en la partitura
+  let fijas = datosNotificaciones.partitura.fijas.map(function(f) { return f.id; });
+  let sorteables = pool.filter(function(noti) {
+    return fijas.indexOf(noti.id) === -1;
+  });
+
   // Filtrar las que ya salieron
-  let disponibles = pool.filter(function(noti) {
+  let disponibles = sorteables.filter(function(noti) {
     return notificacionesUsadas.indexOf(noti.id) === -1;
   });
 
   // Si se agotaron todas, reiniciar
   if (disponibles.length === 0) {
     notificacionesUsadas = [];
-    disponibles = pool;
+    disponibles = sorteables;
   }
 
   // Construir array ponderado con las disponibles
@@ -143,52 +127,98 @@ function getRandomNotification() {
 // CREAR NOTIFICACIÓN VISUAL
 // =============================================================
 
+// Cada notificación toma el aspecto de su app de origen
+let nombreFamilia = {
+  whatsapp: 'WhatsApp',
+  banco: 'Galicia',
+  gmail: 'Gmail',
+  calendario: 'Calendario',
+  obrasocial: 'SaludPlus'
+};
+
+let coloresAvatar = ['#6a4c93', '#3b5f7a', '#8a4b2d', '#2e7d6b', '#7a3b5f', '#4a5a8a'];
+
+function colorAvatar(nombre) {
+  let suma = 0;
+  for (let i = 0; i < nombre.length; i++) suma += nombre.charCodeAt(i);
+  return coloresAvatar[suma % coloresAvatar.length];
+}
+
+function crearEl(tag, clase, texto) {
+  let el = document.createElement(tag);
+  if (clase) el.className = clase;
+  if (texto !== undefined) el.textContent = texto;
+  return el;
+}
+
 function crearNotificacion(noti) {
-  // contenedor
-  let contenedorNotificacion = document.createElement('div');
-  contenedorNotificacion.classList.add('notificacion');
+  let familia = noti.familia || 'whatsapp';
 
-  // si es gasto, marcar visual
-  if (noti.afectaSaldo) {
-    contenedorNotificacion.classList.add('es-gasto');
+  let contenedorNotificacion = crearEl('div', 'notificacion f-' + familia);
+
+  // Encabezado: ícono chico + nombre de la app + "ahora"
+  let head = crearEl('div', 'n-head');
+  let mini = crearEl('img', 'n-mini');
+  mini.src = noti.icono;
+  mini.alt = '';
+  head.appendChild(mini);
+  head.appendChild(crearEl('span', 'n-app', nombreFamilia[familia]));
+  head.appendChild(crearEl('span', 'n-hora', '· ahora'));
+  contenedorNotificacion.appendChild(head);
+
+  if (familia === 'whatsapp') {
+    let cuerpo = crearEl('div', 'n-cuerpo');
+    let avatar = crearEl('div', 'n-avatar');
+    avatar.style.background = colorAvatar(noti.nombreApp);
+    if (noti.esGrupo) {
+      avatar.innerHTML = '<svg viewBox="0 0 24 24" width="22" height="22"><circle cx="9" cy="9" r="3.2" fill="#fff"/><circle cx="16.5" cy="10" r="2.6" fill="#fff" opacity=".75"/><path d="M3 19c.5-3.5 3-5 6-5s5.5 1.5 6 5z" fill="#fff"/><path d="M14.5 14.3c2.5 0 4.6 1.3 5.1 4.7H16" fill="#fff" opacity=".75"/></svg>';
+    } else {
+      avatar.textContent = noti.nombreApp.charAt(0).toUpperCase();
+    }
+    cuerpo.appendChild(avatar);
+    let textos = crearEl('div', 'n-textos');
+    textos.appendChild(crearEl('div', 'n-tit', noti.nombreApp));
+    textos.appendChild(crearEl('div', 'n-msg', noti.mensaje));
+    cuerpo.appendChild(textos);
+    contenedorNotificacion.appendChild(cuerpo);
+    let acc = crearEl('div', 'n-acc');
+    acc.appendChild(crearEl('span', '', 'Responder'));
+    acc.appendChild(crearEl('span', '', 'Marcar como leído'));
+    contenedorNotificacion.appendChild(acc);
+
+  } else if (familia === 'banco') {
+    contenedorNotificacion.appendChild(crearEl('div', 'n-tit', noti.titulo || noti.nombreApp));
+    if (noti.afectaSaldo && noti.monto > 0) {
+      contenedorNotificacion.appendChild(crearEl('div', 'n-monto', '-$' + noti.monto.toLocaleString('es-AR')));
+    }
+    contenedorNotificacion.appendChild(crearEl('div', 'n-msg', noti.detalle || noti.mensaje));
+
+  } else if (familia === 'obrasocial') {
+    // "Autorización rechazada: el estudio..." -> título + texto
+    let partes = noti.mensaje.split(': ');
+    if (partes.length > 1) {
+      let resto = partes.slice(1).join(': ');
+      contenedorNotificacion.appendChild(crearEl('div', 'n-tit', partes[0]));
+      contenedorNotificacion.appendChild(crearEl('div', 'n-msg', resto.charAt(0).toUpperCase() + resto.slice(1)));
+    } else {
+      contenedorNotificacion.appendChild(crearEl('div', 'n-tit', noti.nombreApp));
+      contenedorNotificacion.appendChild(crearEl('div', 'n-msg', noti.mensaje));
+    }
+
+  } else {
+    // gmail y calendario
+    contenedorNotificacion.appendChild(crearEl('div', 'n-tit', noti.nombreApp));
+    contenedorNotificacion.appendChild(crearEl('div', 'n-msg', noti.mensaje));
+    let acc = crearEl('div', 'n-acc');
+    if (familia === 'calendario') {
+      acc.appendChild(crearEl('span', '', 'Posponer'));
+      acc.appendChild(crearEl('span', '', 'Descartar'));
+    } else {
+      acc.appendChild(crearEl('span', '', 'Archivar'));
+      acc.appendChild(crearEl('span', '', 'Responder'));
+    }
+    contenedorNotificacion.appendChild(acc);
   }
-
-  // icono
-  let iconoNoti = document.createElement('div');
-  iconoNoti.classList.add('icono-noti');
-  let iconoImg = document.createElement('img');
-  iconoImg.src = noti.icono;
-  iconoImg.alt = noti.nombreApp;
-  iconoNoti.appendChild(iconoImg);
-  contenedorNotificacion.appendChild(iconoNoti);
-
-  // textos
-  let textosNoti = document.createElement('div');
-  textosNoti.classList.add('textos-noti');
-
-  // título + hora
-  let appNombre = document.createElement('h1');
-  appNombre.classList.add('titulo-noti');
-  appNombre.innerText = noti.nombreApp;
-
-  let spanHora = document.createElement('span');
-  spanHora.classList.add('hora-noti');
-  let ahora = new Date();
-  let h = ahora.getHours();
-  let m = ahora.getMinutes();
-  if (m < 10) m = '0' + m;
-  spanHora.innerText = h + ':' + m;
-  appNombre.appendChild(spanHora);
-
-  textosNoti.appendChild(appNombre);
-
-  // texto del mensaje
-  let textoNoti = document.createElement('p');
-  textoNoti.classList.add('contenido-noti');
-  textoNoti.innerText = noti.mensaje;
-  textosNoti.appendChild(textoNoti);
-
-  contenedorNotificacion.appendChild(textosNoti);
 
   // insertar al principio del contenedor (las nuevas arriba)
   if (notificationContainer.firstChild) {
@@ -205,27 +235,20 @@ function crearNotificacion(noti) {
   // sonido
   playSonidoNoti();
 
-  // Si es una notificación de gasto, avisar a la notebook
+  // *** ENVIAR TODAS LAS NOTIFICACIONES A LA NOTEBOOK ***
+  // Esto hace que aparezcan como popups estilo Windows 11 en la pantalla de presupuesto
+  enviarNotificacion(noti);
+
+  // Si es una notificación de gasto, TAMBIÉN avisar para descontar del presupuesto
   if (noti.afectaSaldo) {
     enviarGasto(noti);
   }
 
-  // efectos secundarios: actualizar badges según categoría
-  if (noti.icono.includes('wtsap')) {
-    updateWhatsAppBadge();
-  }
-  if (noti.categoria === 'dinero' || noti.categoria === 'servicios') {
-    updateBancoBadge();
-  }
-  if (noti.categoria === 'trabajo') {
-    updateGmailBadge();
-  }
-  if (noti.categoria === 'cuidado' || noti.categoria === 'salud') {
-    updateCalendarioBadge();
-  }
+  // sumar al contador del ícono de su app
+  sumarBadge(familia);
 
-  // programar desaparición (entre 5 y 10 segundos)
-  let lifespan = Math.random() * 5000 + 5000;
+  // programar desaparición: todas duran lo mismo
+  let lifespan = datosNotificaciones.partitura.vidaNotificacion * 1000;
 
   let notifObj = {
     element: contenedorNotificacion,
@@ -270,58 +293,98 @@ function forceRemove(element) {
 }
 
 // =============================================================
-// MOTOR DE CAOS
+// PARTITURA: cuándo aparece cada notificación
+// Reemplaza al azar total. Arma la lista de momentos al arrancar
+// y la va disparando. Se corta si la notebook manda "stop".
 // =============================================================
+
+let timeoutsPartitura = [];
+
+function armarPartitura() {
+  let p = datosNotificaciones.partitura;
+  let eventos = [];
+
+  // Tramos con ritmo creciente
+  p.tramos.forEach(function(tramo) {
+    let t = tramo.desde;
+    while (t < tramo.hasta) {
+      eventos.push({ segundo: t });
+      t += tramo.cadaMin + Math.random() * (tramo.cadaMax - tramo.cadaMin);
+    }
+  });
+
+  // Ráfagas
+  p.rafagas.forEach(function(r) {
+    for (let i = 0; i < r.cantidad; i++) {
+      eventos.push({ segundo: r.segundo + i * 0.4 });
+    }
+  });
+
+  // Fijas: sacan del medio a cualquier otra que caiga muy cerca
+  p.fijas.forEach(function(f) {
+    eventos = eventos.filter(function(e) {
+      return Math.abs(e.segundo - f.segundo) > 0.8;
+    });
+    eventos.push({ segundo: f.segundo, id: f.id });
+  });
+
+  eventos = eventos.filter(function(e) { return e.segundo <= p.duracionTotal; });
+  eventos.sort(function(a, b) { return a.segundo - b.segundo; });
+  return eventos;
+}
 
 function scheduleChaos() {
   if (!chaosStarted) return;
+  detenerPartitura();
 
-  if (isInPeaceMode) {
-    let peaceDuration = Math.random() * 2000 + 2000;
-    setTimeout(function() {
-      isInPeaceMode = false;
-      scheduleChaos();
-    }, peaceDuration);
-    return;
-  }
-
-  let burstSize = Math.floor(Math.random() * 2) + 1;
-
-  for (let i = 0; i < burstSize; i++) {
-    setTimeout(function() {
-      let noti = getRandomNotification();
+  armarPartitura().forEach(function(evento) {
+    let id = setTimeout(function() {
+      if (!chaosStarted) return;
+      let noti;
+      if (evento.id) {
+        noti = datosNotificaciones.pool.find(function(n) { return n.id === evento.id; });
+      }
+      if (!noti) noti = getRandomNotification();
       crearNotificacion(noti);
-    }, i * 400);
-  }
+    }, evento.segundo * 1000);
+    timeoutsPartitura.push(id);
+  });
+}
 
-  let nextDelay = Math.random() * 2500 + 1500;
-
-  setTimeout(function() {
-    if (Math.random() < 0.30) {
-      isInPeaceMode = true;
-    }
-    scheduleChaos();
-  }, nextDelay + (burstSize * 400));
+function detenerPartitura() {
+  timeoutsPartitura.forEach(function(id) { clearTimeout(id); });
+  timeoutsPartitura = [];
 }
 
 // =============================================================
-// DESBLOQUEO: tap en pantalla 1 → pantalla 2
-// (funciona como fallback si no hay WebSocket)
+// TOQUE EN LA PANTALLA BLOQUEADA
 // =============================================================
+// Los navegadores no dejan reproducir sonido hasta que la persona
+// toca la pantalla una vez. Este toque SOLO HABILITA EL SONIDO.
+// Nunca arranca las notificaciones: arrancan únicamente cuando la
+// notebook manda "start" (al tocar "Comenzar" en la app de presupuesto).
+
+let sonidoHabilitado = false;
+
+function habilitarSonido() {
+  if (sonidoHabilitado) return;
+  sonidoNoti.muted = true;
+  let intento = sonidoNoti.play();
+  if (intento && intento.then) {
+    intento.then(function() {
+      sonidoNoti.pause();
+      sonidoNoti.currentTime = 0;
+      sonidoNoti.muted = false;
+      sonidoHabilitado = true;
+    }).catch(function() {
+      sonidoNoti.muted = false;
+    });
+  } else {
+    sonidoNoti.muted = false;
+    sonidoHabilitado = true;
+  }
+}
 
 pantalla1.addEventListener('click', function() {
-  pantalla1.classList.add('desbloqueando');
-
-  setTimeout(function() {
-    pantalla1.classList.remove('disp', 'desbloqueando');
-    pantalla1.classList.add('no-disp');
-
-    pantalla2.classList.remove('no-disp');
-    pantalla2.classList.add('disp');
-
-    setTimeout(function() {
-      chaosStarted = true;
-      scheduleChaos();
-    }, 1000);
-  }, 400);
+  habilitarSonido();
 });

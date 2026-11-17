@@ -11,7 +11,7 @@
       href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="assets/css/styles.css" />
+    <link rel="stylesheet" href="assets/css/styles.css?v=3" />
     <title>APP NOTIFICATIONS</title>
   </head>
   <body>
@@ -42,47 +42,24 @@
           <div class="search-bar-inner">
             <span class="search-g">G</span>
             <span class="search-placeholder">Buscar</span>
-            <span class="search-mic">🎙️</span>
+            <svg class="search-mic" viewBox="0 0 24 24" width="20" height="20"><rect x="9" y="3" width="6" height="11" rx="3" fill="#4285F4"/><path d="M6 11a6 6 0 0 0 12 0M12 17v4" stroke="#EA4335" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
           </div>
         </div>
 
-        <!-- Grilla de apps (home screen) -->
+        <!-- Dock: las cinco apps de donde llegan las notificaciones -->
         <div id="home-screen">
-          <div class="app-icon">
-            <div class="icon" style="background: #25D366;">
-              <img src="assets/imgs/icono-wtsap.png" alt="WhatsApp" class="app-img" />
-            </div>
-            <span class="badge" id="whatsappBadge" style="display:none;">0</span>
-            <span class="app-name">WhatsApp</span>
-          </div>
-          <div class="app-icon">
-            <div class="icon" style="background: #EA4335;">
-              <span class="app-emoji">✉️</span>
-            </div>
-            <span class="badge" id="gmailBadge" style="display:none;">0</span>
-            <span class="app-name">Gmail</span>
-          </div>
-          <div class="app-icon">
-            <div class="icon" style="background: #1a1a2e;">
-              <img src="assets/imgs/icono-banco.png" alt="Banco" class="app-img" />
-            </div>
-            <span class="badge" id="bancoBadge" style="display:none;">0</span>
-            <span class="app-name">Banco</span>
-          </div>
-          <div class="app-icon">
-            <div class="icon" style="background: #4285F4;">
-              <span class="app-emoji">📅</span>
-            </div>
-            <span class="badge" id="calendarioBadge" style="display:none;">0</span>
-            <span class="app-name">Calendario</span>
-          </div>
+          <div class="dk"><img src="assets/imgs/icono-wtsap.png" alt="WhatsApp" class="dk-ic dk-wa" /><span class="badge" id="badge-whatsapp" style="display:none;">0</span></div>
+          <div class="dk"><img src="assets/imgs/icono-gmail.svg" alt="Gmail" class="dk-ic" /><span class="badge" id="badge-gmail" style="display:none;">0</span></div>
+          <div class="dk"><img src="assets/imgs/icono-banco.png" alt="Galicia" class="dk-ic" /><span class="badge" id="badge-banco" style="display:none;">0</span></div>
+          <div class="dk"><img src="assets/imgs/icono-obrasocial.svg" alt="Obra social" class="dk-ic" /><span class="badge" id="badge-obrasocial" style="display:none;">0</span></div>
+          <div class="dk"><img src="assets/imgs/icono-calendario.svg" alt="Calendario" class="dk-ic" /><span class="badge" id="badge-calendario" style="display:none;">0</span></div>
         </div>
 
       </div>
     </div>
 
-    <script src="assets/js/datos-notificaciones.js"></script>
-    <script src="assets/js/websocket-client.js"></script>
-    <script src="assets/js/main.js"></script>
+    <script src="assets/js/datos-notificaciones.js?v=3"></script>
+    <script src="assets/js/websocket-client.js?v=3"></script>
+    <script src="assets/js/main.js?v=3"></script>
   </body>
 </html>
