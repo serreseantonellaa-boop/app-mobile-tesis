@@ -421,7 +421,7 @@ function mostrarLlamadaEntrante(datos) {
     vibracion = setInterval(function() { navigator.vibrate([900, 600]); }, 1500);
   }
 
-  llamadaActual = { quien: datos.quien, audio: audio, vibracion: vibracion };
+  llamadaActual = { quien: datos.quien, audio: audio, vibracion: vibracion, sonidoCortar: datos.sonidoCortar };
 }
 
 function ocultarLlamadaEntrante() {
@@ -440,6 +440,11 @@ function ocultarLlamadaEntrante() {
 document.getElementById('btn-colgar').addEventListener('click', function() {
   if (!llamadaActual) return;
   let quien = llamadaActual.quien;
+  let sonidoCortar = llamadaActual.sonidoCortar;
   ocultarLlamadaEntrante();
+  if (sonidoCortar) {
+    let corte = new Audio(sonidoCortar);
+    corte.play().catch(function() {});
+  }
   enviarLlamadaCortada(quien);
 });
