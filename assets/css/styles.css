@@ -386,3 +386,105 @@ html, body {
     transform: scale(1.05);
   }
 }
+
+/* ========================================
+   LLAMADA ENTRANTE (cobranza)
+   Pantalla completa, como una llamada común de Android.
+   ======================================== */
+#llamada-entrante {
+  position: absolute;
+  inset: 0;
+  z-index: 200;
+  background: linear-gradient(180deg, #1c1f26 0%, #0b0c10 100%);
+  color: #fff;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12vh 0 10vh;
+  font-family: Roboto, sans-serif;
+}
+
+.le-arriba {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.le-tipo {
+  font-size: 15px;
+  color: #b8bcc6;
+  letter-spacing: 0.3px;
+}
+
+.le-avatar {
+  width: 118px;
+  height: 118px;
+  border-radius: 50%;
+  background: #2c3038;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 18px 0 10px;
+  position: relative;
+}
+
+/* Ondas mientras suena */
+.le-avatar::before,
+.le-avatar::after {
+  content: "";
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  animation: leOnda 1.8s ease-out infinite;
+}
+
+.le-avatar::after { animation-delay: 0.9s; }
+
+@keyframes leOnda {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+.le-nombre {
+  font-size: 30px;
+  font-weight: 400;
+  text-align: center;
+  padding: 0 20px;
+}
+
+.le-sub {
+  font-size: 16px;
+  color: #b8bcc6;
+}
+
+.le-abajo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.le-colgar {
+  width: 78px;
+  height: 78px;
+  border-radius: 50%;
+  border: none;
+  background: #e53935;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 24px rgba(229, 57, 53, 0.45);
+  animation: leLatido 1.2s ease-in-out infinite;
+}
+
+@keyframes leLatido {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.07); }
+}
+
+.le-colgar-txt {
+  font-size: 14px;
+  color: #d0d3da;
+}

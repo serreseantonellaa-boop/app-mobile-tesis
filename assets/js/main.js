@@ -388,3 +388,58 @@ function habilitarSonido() {
 pantalla1.addEventListener('click', function() {
   habilitarSonido();
 });
+
+
+// =============================================================
+// LLAMADA ENTRANTE (cobranza)
+// La notebook avisa cuándo entra. Suena y vibra en loop hasta
+// que la persona cuelga; entonces se le avisa a la notebook,
+// que mientras tanto tiene la planilla bloqueada.
+// =============================================================
+
+let llamadaEntranteEl = document.getElementById('llamada-entrante');
+let llamadaActual = null;          // { quien, audio, vibracion }
+
+function mostrarLlamadaEntrante(datos) {
+  if (llamadaActual) return;
+  document.getElementById('le-nombre').textContent = datos.nombre || 'Estudio de Cobranzas';
+  document.getElementById('le-sub').textContent = datos.sub || 'Número desconocido';
+  llamadaEntranteEl.classList.remove('no-disp');
+  llamadaEntranteEl.classList.add('disp');
+
+  let audio = null;
+  if (datos.sonido) {
+    audio = new Audio(datos.sonido);
+    audio.loop = true;
+    audio.play().catch(function() {});
+  }
+
+  // Vibración, donde el navegador lo permita (Chrome en Android)
+  let vibracion = null;
+  if (navigator.vibrate) {
+    navigator.vibrate([900, 600]);
+    vibracion = setInterval(function() { navigator.vibrate([900, 600]); }, 1500);
+  }
+
+  llamadaActual = { quien: datos.quien, audio: audio, vibracion: vibracion };
+}
+
+function ocultarLlamadaEntrante() {
+  if (!llamadaActual) return;
+  if (llamadaActual.audio) {
+    llamadaActual.audio.pause();
+    llamadaActual.audio.currentTime = 0;
+  }
+  if (llamadaActual.vibracion) clearInterval(llamadaActual.vibracion);
+  if (navigator.vibrate) navigator.vibrate(0);
+  llamadaEntranteEl.classList.remove('disp');
+  llamadaEntranteEl.classList.add('no-disp');
+  llamadaActual = null;
+}
+
+document.getElementById('btn-colgar').addEventListener('click', function() {
+  if (!llamadaActual) return;
+  let quien = llamadaActual.quien;
+  ocultarLlamadaEntrante();
+  enviarLlamadaCortada(quien);
+});

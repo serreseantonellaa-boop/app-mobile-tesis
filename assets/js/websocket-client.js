@@ -76,6 +76,12 @@ function conectarWebSocket() {
       resetearDesdeWebSocket();
     }
 
+    // --- LLAMADA: la notebook hace sonar una llamada en el celular ---
+    if (datos.tipo === 'llamada') {
+      if (datos.estado === 'entrante') mostrarLlamadaEntrante(datos);
+      if (datos.estado === 'terminar') ocultarLlamadaEntrante();
+    }
+
     // --- IDENTIFICADO: confirmación del servidor ---
     if (datos.tipo === 'identificado') {
       console.log('Servidor confirmó:', datos.mensaje);
@@ -137,6 +143,13 @@ function enviarNotificacion(noti) {
   }
 }
 
+// --- AVISAR QUE SE CORTÓ LA LLAMADA ---
+function enviarLlamadaCortada(quien) {
+  if (conectado && ws.readyState === WebSocket.OPEN) {
+    ws.send(JSON.stringify({ tipo: 'llamada', estado: 'cortada', quien: quien }));
+  }
+}
+
 // --- FUNCIONES QUE SE LLAMAN DESDE LOS MENSAJES ---
 function desbloquearDesdeWebSocket() {
   // Si ya está corriendo, no arrancar dos veces
@@ -160,6 +173,7 @@ function desbloquearDesdeWebSocket() {
 
 function detenerDesdeWebSocket() {
   chaosStarted = false;
+  if (typeof ocultarLlamadaEntrante === 'function') ocultarLlamadaEntrante();
   detenerPartitura();
   notificacionesUsadas = [];
 
