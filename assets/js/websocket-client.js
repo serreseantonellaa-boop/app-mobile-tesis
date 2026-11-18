@@ -15,15 +15,18 @@
 // =============================================================
 
 // --- CONFIGURACIÓN ---
-// Cambiar esta IP por la de la notebook cuando estén en la misma red Wi-Fi.
-// Para saber la IP: abrir terminal en la notebook y escribir "ipconfig" (Windows).
-// Buscar "Dirección IPv4" en el adaptador Wi-Fi (ej: 192.168.1.45).
-// IMPORTANTE: mientras estés probando en la misma PC, usá "localhost".
-// IP de la notebook en la red donde se monta la instalación.
-// Se averigua en la notebook con: cmd > ipconfig > "Dirección IPv4".
-//   Casa:     192.168.1.51
-//   Facultad: 120.120.0.166
-let WS_URL = 'ws://192.168.1.51:8080';
+// El servidor corre en la notebook, en el puerto 8080.
+// El celular abre esta app desde la propia notebook (npx serve, puerto 3000),
+// así que la dirección de la página ES la de la notebook: se usa esa misma.
+// Funciona en cualquier red sin tocar nada.
+//
+// Si la página se abre desde otro lado (Vercel, o un archivo suelto),
+// se usa la red propia de la notebook (Zona con cobertura inalámbrica
+// móvil de Windows), que siempre tiene la dirección 192.168.137.1.
+let IP_RED_PROPIA = '192.168.137.1';
+let hostPagina = window.location.hostname;
+let esLocal = /^(\d{1,3}\.){3}\d{1,3}$/.test(hostPagina) || hostPagina === 'localhost';
+let WS_URL = 'ws://' + (esLocal ? hostPagina : IP_RED_PROPIA) + ':8080';
 
 let ws = null;
 let conectado = false;
